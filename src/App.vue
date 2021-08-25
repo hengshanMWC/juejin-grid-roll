@@ -33,10 +33,13 @@
           </div>
           <div class="blocks">
             <div class="item-container">
-              <gridRoll interval="6px">
+              <gridRoll interval="6px" ref="dial">
                 <template v-slot:button>
                   <gridStart>
-                    <div class="turntable-item item lottery">
+                    <div
+                      @click="handleLottery"
+                      class="turntable-item item lottery"
+                    >
                       <div class="lottery-text">抽奖</div>
                       <div class="text">200矿石1次</div>
                     </div>
@@ -46,14 +49,43 @@
                   <gridPrize
                     v-for="prize in prizes"
                     :key="prize.id"
-                    :pic="prize.id"
+                    :pid="prize.id"
+                    :disabled="prize.disabled"
                   >
-                    <div class="turntable-item item">
-                      <div class="image">
-                        <img :src="prize.img" alt="" />
+                    <template v-slot="{ isSelect }">
+                      <div
+                        class="turntable-item item"
+                        :class="{ chosen: isSelect }"
+                      >
+                        <div
+                          v-if="prize.disabled"
+                          data-v-9ca7245c=""
+                          class="locked"
+                        ></div>
+                        <div class="image">
+                          <img :src="prize.img" alt="" />
+                        </div>
+                        <div class="text">{{ prize.text }}</div>
+                        <svg
+                          v-if="prize.disabled"
+                          data-v-9ca7245c=""
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="lock"
+                        >
+                          <path
+                            data-v-9ca7245c=""
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M7.99999 1.33325C10.025 1.33325 11.6667 2.97487 11.6667 4.99992V6.33325H14C14.3682 6.33325 14.6667 6.63173 14.6667 6.99992V13.9999C14.6667 14.3681 14.3682 14.6666 14 14.6666H1.99999C1.63181 14.6666 1.33333 14.3681 1.33333 13.9999V6.99992C1.33333 6.63173 1.63181 6.33325 1.99999 6.33325H4.33333V4.99992C4.33333 2.97487 5.97495 1.33325 7.99999 1.33325ZM8.33335 8.66667C8.51744 8.66667 8.66668 8.81591 8.66668 9V12C8.66668 12.1841 8.51744 12.3333 8.33335 12.3333H7.66668C7.48259 12.3333 7.33335 12.1841 7.33335 12V9C7.33335 8.81591 7.48259 8.66667 7.66668 8.66667H8.33335ZM5.66668 5C5.66668 3.71134 6.71135 2.66667 8.00001 2.66667C9.28868 2.66667 10.3333 3.71134 10.3333 5V6.33333H5.66668V5Z"
+                            fill="#D25F00"
+                          ></path>
+                        </svg>
                       </div>
-                      <div class="text">{{ prize.text }}</div>
-                    </div>
+                    </template>
                   </gridPrize>
                 </template>
               </gridRoll>
@@ -97,6 +129,7 @@ export default {
           id: 5,
           text: "再抽2次解锁",
           img: "https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aabe49b0d5c741fa8d92ff94cd17cb90~tplv-k3u1fbpfcp-no-mark:0:0:0:0.awebp",
+          disabled: true,
         },
         {
           id: 6,
@@ -112,6 +145,7 @@ export default {
           id: 8,
           text: "再抽3次解锁",
           img: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4decbd721b2b48098a1ecf879cfca677~tplv-k3u1fbpfcp-no-mark:0:0:0:0.awebp",
+          disabled: true,
         },
       ],
     };
@@ -120,6 +154,19 @@ export default {
     gridRoll,
     gridStart,
     gridPrize,
+  },
+  methods: {
+    async handleLottery() {
+      const value = 1;
+      const b = await this.$refs.dial.startRoll(value);
+      if (b) {
+        alert(
+          `🎉你抽到${this.prizes.find((prize) => prize.id === value).text}`
+        );
+      } else {
+        console.warn("稍安勿躁");
+      }
+    },
   },
 };
 </script>
@@ -230,6 +277,16 @@ export default {
         border-radius: 4px;
         position: relative;
         user-select: none;
+        &.chosen {
+          background: #ffcf8b;
+        }
+        .lock {
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          top: 8px;
+          right: 8px;
+        }
         .lottery-text {
           font-size: 32px;
           line-height: 42px;
@@ -261,5 +318,15 @@ export default {
       }
     }
   }
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+.locked {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #fdf3f3;
+  opacity: 0.7;
 }
 </style>
