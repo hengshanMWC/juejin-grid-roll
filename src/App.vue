@@ -167,17 +167,18 @@ export default {
     gridPrize,
   },
   methods: {
-    async handleLottery() {
+    handleLottery() {
       const value = 1;
-      const b = await this.$refs.dial.startRoll(value);
-      if (b) {
-        alert(
-          `🎉你抽到${this.prizes.find((prize) => prize.id === value).text}`
-        );
-        this.completeNumber++;
-      } else {
-        console.warn("稍安勿躁");
-      }
+      return this.$refs.dial.startRoll(value).then((b) => {
+        if (b) {
+          alert(
+            `🎉你抽到${this.prizes.find((prize) => prize.id === value).text}`
+          );
+          this.completeNumber++;
+        } else {
+          console.warn("稍安勿躁");
+        }
+      });
     },
   },
 };
