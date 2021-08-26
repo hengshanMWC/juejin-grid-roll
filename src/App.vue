@@ -104,7 +104,12 @@ export default {
   name: "App",
   data() {
     return {
-      prizes: [
+      completeNumber: 0,
+    };
+  },
+  computed: {
+    prizes() {
+      return [
         {
           id: 1,
           text: "66矿石",
@@ -127,9 +132,12 @@ export default {
         },
         {
           id: 5,
-          text: "再抽2次解锁",
+          text:
+            this.completeNumber >= 2
+              ? "乐高海洋巨轮"
+              : `再抽${2 - this.completeNumber}次解锁`,
           img: "https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aabe49b0d5c741fa8d92ff94cd17cb90~tplv-k3u1fbpfcp-no-mark:0:0:0:0.awebp",
-          disabled: true,
+          disabled: this.completeNumber < 2,
         },
         {
           id: 6,
@@ -143,12 +151,15 @@ export default {
         },
         {
           id: 8,
-          text: "再抽3次解锁",
+          text:
+            this.completeNumber >= 3
+              ? "Switch"
+              : `再抽${3 - this.completeNumber}次解锁`,
           img: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4decbd721b2b48098a1ecf879cfca677~tplv-k3u1fbpfcp-no-mark:0:0:0:0.awebp",
-          disabled: true,
+          disabled: this.completeNumber < 3,
         },
-      ],
-    };
+      ];
+    },
   },
   components: {
     gridRoll,
@@ -163,6 +174,7 @@ export default {
         alert(
           `🎉你抽到${this.prizes.find((prize) => prize.id === value).text}`
         );
+        this.completeNumber++;
       } else {
         console.warn("稍安勿躁");
       }
