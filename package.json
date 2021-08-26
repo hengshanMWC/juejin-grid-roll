@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "grid-roll": "1.4.1",
+    "grid-roll": "^1.4.1",
+    "sweetalert2": "^11.1.4",
     "vue": "^2.6.11"
   },
   "devDependencies": {

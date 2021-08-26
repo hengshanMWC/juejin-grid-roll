@@ -102,6 +102,7 @@
 import { gridRoll, gridStart, gridPrize } from "grid-roll";
 import "grid-roll/dist/grid-roll.min.css";
 import prizeCheckbox from "./components/prizeCheckbox";
+import Swal from "sweetalert2";
 export default {
   name: "App",
   data() {
@@ -184,7 +185,7 @@ export default {
       }
       return this.$refs.dial.startRoll(values).then((b) => {
         if (b) {
-          alert(`🎉你抽到${this.getPrizesName(values).join(",")}`);
+          Swal.fire(`🎉你抽到${this.getPrizesName(values).join(",")}`);
           this.completeNumber++;
         } else {
           console.warn("稍安勿躁");
