@@ -94,12 +94,14 @@
         </div>
       </div>
     </div>
+    <prizeCheckbox ref="prizeCheckbox" :prizes="prizes"></prizeCheckbox>
   </div>
 </template>
 
 <script>
 import { gridRoll, gridStart, gridPrize } from "grid-roll";
 import "grid-roll/dist/grid-roll.min.css";
+import prizeCheckbox from "./components/prizeCheckbox";
 export default {
   name: "App",
   data() {
@@ -165,20 +167,34 @@ export default {
     gridRoll,
     gridStart,
     gridPrize,
+    prizeCheckbox,
+  },
+  mounted() {
+    window.addEventListener("resize", () => {
+      setTimeout(() => {
+        this.$refs.dial.initDom();
+      }, 500);
+    });
   },
   methods: {
     handleLottery() {
-      const value = 1;
-      return this.$refs.dial.startRoll(value).then((b) => {
+      const values = [].concat(this.$refs.prizeCheckbox.value);
+      if (!values.length) {
+        return console.warn("请选择奖品id");
+      }
+      return this.$refs.dial.startRoll(values).then((b) => {
         if (b) {
-          alert(
-            `🎉你抽到${this.prizes.find((prize) => prize.id === value).text}`
-          );
+          alert(`🎉你抽到${this.getPrizesName(values).join(",")}`);
           this.completeNumber++;
         } else {
           console.warn("稍安勿躁");
         }
       });
+    },
+    getPrizesName(values) {
+      return values.map(
+        (value) => this.prizes.find((prize) => prize.id === value).text
+      );
     },
   },
 };
